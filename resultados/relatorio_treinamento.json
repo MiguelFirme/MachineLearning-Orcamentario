@@ -1,0 +1,169 @@
+{
+  "status": "concluido",
+  "dataset": {
+    "arquivo": "dados\\dataset_plasma_v10.csv",
+    "linhas_totais": 1919,
+    "linhas_validas_plasma": 1141,
+    "grupos_geometricos_distintos": 1109,
+    "tempo_minimo_s": 4.53,
+    "tempo_mediano_s": 60.0,
+    "tempo_maximo_s": 300.0
+  },
+  "metodologia": {
+    "validacao_externa": "GroupKFold 5 dobras",
+    "validacao_interna": "GroupKFold 4 dobras",
+    "criterio_ajuste": "menor MAE",
+    "agrupamento": "linhas com entradas identicas permanecem na mesma dobra",
+    "regra_escolha_regressao": "polinomial apenas se reduzir o MAE fora da amostra em pelo menos 2%; caso contrario, multipla"
+  },
+  "comparacao": {
+    "knn": {
+      "mae_s": 17.43495951790325,
+      "rmse_s": 27.513277688025962,
+      "r2": 0.7224198400869823,
+      "erro_p90_s": 42.02192952001215,
+      "erro_p95_s": 60.01062543001683,
+      "erro_ate_10_s_pct": 47.50219106047327,
+      "erro_ate_20_s_pct": 70.46450482033305,
+      "erro_ate_30_s_pct": 83.61086765994742,
+      "mae_medio_dobras_s": 17.434202271981057,
+      "mae_desvio_dobras_s": 1.7210256688167602,
+      "melhores_parametros_por_dobra": [
+        {
+          "modelo__n_neighbors": 5,
+          "modelo__p": 1,
+          "modelo__weights": "distance"
+        },
+        {
+          "modelo__n_neighbors": 5,
+          "modelo__p": 1,
+          "modelo__weights": "distance"
+        },
+        {
+          "modelo__n_neighbors": 3,
+          "modelo__p": 1,
+          "modelo__weights": "distance"
+        },
+        {
+          "modelo__n_neighbors": 5,
+          "modelo__p": 1,
+          "modelo__weights": "distance"
+        },
+        {
+          "modelo__n_neighbors": 11,
+          "modelo__p": 1,
+          "modelo__weights": "distance"
+        }
+      ]
+    },
+    "regressao_multipla": {
+      "mae_s": 22.910097912615516,
+      "rmse_s": 32.547168582584455,
+      "r2": 0.6115544187445116,
+      "erro_p90_s": 49.78026795038798,
+      "erro_p95_s": 70.54962826426123,
+      "erro_ate_10_s_pct": 34.268185801928134,
+      "erro_ate_20_s_pct": 58.282208588957054,
+      "erro_ate_30_s_pct": 74.67134092900965,
+      "mae_medio_dobras_s": 22.91658855377007,
+      "mae_desvio_dobras_s": 1.7540780307901571,
+      "melhores_parametros_por_dobra": [
+        {
+          "modelo__alpha": 100.0
+        },
+        {
+          "modelo__alpha": 100.0
+        },
+        {
+          "modelo__alpha": 10.0
+        },
+        {
+          "modelo__alpha": 1.0
+        },
+        {
+          "modelo__alpha": 10.0
+        }
+      ]
+    },
+    "regressao_polinomial": {
+      "mae_s": 22.328518980082713,
+      "rmse_s": 32.957604475662606,
+      "r2": 0.601695664555742,
+      "erro_p90_s": 50.15377135732574,
+      "erro_p95_s": 66.7340265925593,
+      "erro_ate_10_s_pct": 35.056967572305,
+      "erro_ate_20_s_pct": 59.85977212971078,
+      "erro_ate_30_s_pct": 76.24890446976337,
+      "mae_medio_dobras_s": 22.33234159686547,
+      "mae_desvio_dobras_s": 1.4619916486347826,
+      "melhores_parametros_por_dobra": [
+        {
+          "modelo__alpha": 100.0
+        },
+        {
+          "modelo__alpha": 100.0
+        },
+        {
+          "modelo__alpha": 100.0
+        },
+        {
+          "modelo__alpha": 100.0
+        },
+        {
+          "modelo__alpha": 100.0
+        }
+      ]
+    }
+  },
+  "decisao": {
+    "modelo_1": "knn",
+    "modelo_2": "regressao_polinomial",
+    "ganho_polinomial_contra_multipla_pct": 2.5385266128110047,
+    "parametros_finais_knn": {
+      "modelo__n_neighbors": 7,
+      "modelo__p": 1,
+      "modelo__weights": "distance"
+    },
+    "parametros_finais_regressao": {
+      "modelo__alpha": 100.0
+    }
+  },
+  "ambiente": {
+    "alvo": "tempo_corte_plasma_s",
+    "features": [
+      "material_aco",
+      "espessura_mm",
+      "comprimento_total_mm",
+      "largura_total_mm",
+      "perimetro_corte_mm",
+      "area_mm2",
+      "quantidade_furos",
+      "peso_liquido_kg",
+      "perimetro_externo_mm",
+      "perimetro_interno_mm",
+      "area_recortes_internos_mm2",
+      "quantidade_contornos",
+      "quantidade_entidades_dxf",
+      "quantidade_linhas_dxf",
+      "quantidade_arcos_dxf",
+      "quantidade_circulos_dxf",
+      "quantidade_splines_dxf",
+      "quantidade_segmentos_bulge",
+      "comprimento_reto_mm",
+      "comprimento_curvo_mm",
+      "menor_perimetro_interno_mm",
+      "perimetro_interno_medio_mm",
+      "recortes_ate_10mm",
+      "recortes_ate_25mm",
+      "recortes_ate_50mm",
+      "razao_perimetro_interno",
+      "ocupacao_retangulo",
+      "compacidade_externa"
+    ],
+    "dataset": "dataset_plasma_v10.csv",
+    "quantidade_pecas": 1141,
+    "criado_em_utc": "2026-09-18T18:37:43.564947+00:00",
+    "python": "3.12.14",
+    "scikit_learn": "1.9.1"
+  }
+}
