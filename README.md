@@ -16,9 +16,9 @@ KNN é usado como **regressor** porque o tempo é um valor numérico contínuo.
 
 ## Estrutura
 
-- `dados/`: cópia do dataset V10 usada pela V2.
+- `data/`: cópia do dataset V10 usada pela V2.
 - `src/`: treinamento, previsão e extração geométrica de DXF.
-- `modelos/`: os dois modelos finais treinados.
+- `model/`: os dois modelos finais treinados.
 - `resultados/`: métricas e previsões de validação cruzada.
 - `pesquisa/`: referências de trabalhos semelhantes.
 - `ANDAMENTO.md`: diário e ponto exato para retomada.

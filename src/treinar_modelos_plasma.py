@@ -30,10 +30,10 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, PolynomialFeatures, StandardScaler
 
 
-PASTA_V2 = Path(__file__).resolve().parents[1]
-CAMINHO_DATASET = PASTA_V2 / "dados" / "dataset_plasma_v10.csv"
-PASTA_MODELOS = PASTA_V2 / "modelos"
-PASTA_RESULTADOS = PASTA_V2 / "resultados"
+PASTA_RAIZ = Path(__file__).resolve().parents[1]
+CAMINHO_DATASET = PASTA_RAIZ / "data" / "dataset_plasma_v10.csv"
+PASTA_MODELOS = PASTA_RAIZ / "model"
+PASTA_RESULTADOS = PASTA_RAIZ / "resultados"
 
 ALVO = "tempo_corte_plasma_s"
 CATEGORICAS = ["material_aco"]
@@ -314,7 +314,7 @@ def main():
     relatorio = {
         "status": "concluido",
         "dataset": {
-            "arquivo": str(CAMINHO_DATASET.relative_to(PASTA_V2)),
+            "arquivo": str(CAMINHO_DATASET.relative_to(PASTA_RAIZ)),
             "linhas_totais": int(len(df)),
             "linhas_validas_plasma": int(len(plasma)),
             "grupos_geometricos_distintos": int(len(np.unique(grupos))),

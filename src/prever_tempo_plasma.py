@@ -12,11 +12,12 @@ import pandas as pd
 from extract_dxf_geometry import extract_geometry
 
 
-PASTA_V2 = Path(__file__).resolve().parents[1]
-PASTA_PROJETO = PASTA_V2.parent
+PASTA_RAIZ = Path(__file__).resolve().parents[1]
+PASTA_PROJETO = PASTA_RAIZ.parent
 PASTA_DXFS = PASTA_PROJETO / "PEÇAS" / "DXFs"
-CAMINHO_KNN = PASTA_V2 / "modelos" / "modelo_knn_plasma.joblib"
-CAMINHO_REGRESSAO = PASTA_V2 / "modelos" / "modelo_regressao_plasma.joblib"
+PASTA_MODELOS = PASTA_RAIZ / "model"
+CAMINHO_KNN = PASTA_MODELOS / "modelo_knn_plasma.joblib"
+CAMINHO_REGRESSAO = PASTA_MODELOS / "modelo_regressao_plasma.joblib"
 DENSIDADE_ACO_KG_MM3 = 7.85e-6
 
 MAPA_DXF_MODELO = {
@@ -119,7 +120,8 @@ def main():
     for caminho in [CAMINHO_KNN, CAMINHO_REGRESSAO]:
         if not caminho.is_file():
             raise FileNotFoundError(
-                f"Modelo nao encontrado: {caminho}. Execute primeiro o treinamento."
+                f"Modelo nao encontrado: {caminho}. "
+                "Execute primeiro: python src/treinar_modelos_plasma.py"
             )
 
     caminho_dxf = localizar_dxf(texto_dxf)
