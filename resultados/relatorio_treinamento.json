@@ -1,7 +1,7 @@
 {
   "status": "concluido",
   "dataset": {
-    "arquivo": "dados\\dataset_plasma_v10.csv",
+    "arquivo": "data\\dataset_plasma_v10.csv",
     "linhas_totais": 1919,
     "linhas_validas_plasma": 1141,
     "grupos_geometricos_distintos": 1109,
@@ -13,6 +13,11 @@
     "validacao_externa": "GroupKFold 5 dobras",
     "validacao_interna": "GroupKFold 4 dobras",
     "criterio_ajuste": "menor MAE",
+    "metricas_distancia_knn_testadas": [
+      "manhattan",
+      "euclidean",
+      "chebyshev"
+    ],
     "agrupamento": "linhas com entradas identicas permanecem na mesma dobra",
     "regra_escolha_regressao": "polinomial apenas se reduzir o MAE fora da amostra em pelo menos 2%; caso contrario, multipla"
   },
@@ -30,43 +35,75 @@
       "mae_desvio_dobras_s": 1.7210256688167602,
       "melhores_parametros_por_dobra": [
         {
+          "modelo__metric": "manhattan",
           "modelo__n_neighbors": 5,
-          "modelo__p": 1,
           "modelo__weights": "distance"
         },
         {
+          "modelo__metric": "manhattan",
           "modelo__n_neighbors": 5,
-          "modelo__p": 1,
           "modelo__weights": "distance"
         },
         {
+          "modelo__metric": "manhattan",
           "modelo__n_neighbors": 3,
-          "modelo__p": 1,
           "modelo__weights": "distance"
         },
         {
+          "modelo__metric": "manhattan",
           "modelo__n_neighbors": 5,
-          "modelo__p": 1,
           "modelo__weights": "distance"
         },
         {
+          "modelo__metric": "manhattan",
           "modelo__n_neighbors": 11,
-          "modelo__p": 1,
           "modelo__weights": "distance"
         }
-      ]
+      ],
+      "comparacao_metricas_distancia_validacao_interna": {
+        "manhattan": {
+          "mae_por_dobra_s": [
+            18.06019562464033,
+            19.917621998868263,
+            18.156834228637415,
+            19.681147574574023,
+            18.802247455112422
+          ],
+          "mae_medio_s": 18.923609376366493
+        },
+        "euclidean": {
+          "mae_por_dobra_s": [
+            18.937432430022582,
+            20.10737986926089,
+            18.702226468551856,
+            20.09642520907814,
+            19.439363597259916
+          ],
+          "mae_medio_s": 19.456565514834676
+        },
+        "chebyshev": {
+          "mae_por_dobra_s": [
+            20.23094821866339,
+            21.066072020940634,
+            20.153705406014552,
+            21.373226550350036,
+            20.774772559369115
+          ],
+          "mae_medio_s": 20.719744951067547
+        }
+      }
     },
     "regressao_multipla": {
-      "mae_s": 22.910097912615516,
-      "rmse_s": 32.547168582584455,
-      "r2": 0.6115544187445116,
-      "erro_p90_s": 49.78026795038798,
-      "erro_p95_s": 70.54962826426123,
+      "mae_s": 22.91020127042624,
+      "rmse_s": 32.54732327260898,
+      "r2": 0.6115507263311987,
+      "erro_p90_s": 49.780038673071374,
+      "erro_p95_s": 70.54766588204791,
       "erro_ate_10_s_pct": 34.268185801928134,
       "erro_ate_20_s_pct": 58.282208588957054,
       "erro_ate_30_s_pct": 74.67134092900965,
-      "mae_medio_dobras_s": 22.91658855377007,
-      "mae_desvio_dobras_s": 1.7540780307901571,
+      "mae_medio_dobras_s": 22.916692503415756,
+      "mae_desvio_dobras_s": 1.7539750842758761,
       "melhores_parametros_por_dobra": [
         {
           "modelo__alpha": 100.0
@@ -86,16 +123,16 @@
       ]
     },
     "regressao_polinomial": {
-      "mae_s": 22.328518980082713,
-      "rmse_s": 32.957604475662606,
-      "r2": 0.601695664555742,
-      "erro_p90_s": 50.15377135732574,
-      "erro_p95_s": 66.7340265925593,
+      "mae_s": 22.328703493627494,
+      "rmse_s": 32.957201010393085,
+      "r2": 0.6017054165377174,
+      "erro_p90_s": 50.18069703493883,
+      "erro_p95_s": 66.73359512312895,
       "erro_ate_10_s_pct": 35.056967572305,
       "erro_ate_20_s_pct": 59.85977212971078,
       "erro_ate_30_s_pct": 76.24890446976337,
-      "mae_medio_dobras_s": 22.33234159686547,
-      "mae_desvio_dobras_s": 1.4619916486347826,
+      "mae_medio_dobras_s": 22.332527990468613,
+      "mae_desvio_dobras_s": 1.4621907886645873,
       "melhores_parametros_por_dobra": [
         {
           "modelo__alpha": 100.0
@@ -118,10 +155,10 @@
   "decisao": {
     "modelo_1": "knn",
     "modelo_2": "regressao_polinomial",
-    "ganho_polinomial_contra_multipla_pct": 2.5385266128110047,
+    "ganho_polinomial_contra_multipla_pct": 2.5381609263702747,
     "parametros_finais_knn": {
+      "modelo__metric": "manhattan",
       "modelo__n_neighbors": 7,
-      "modelo__p": 1,
       "modelo__weights": "distance"
     },
     "parametros_finais_regressao": {
@@ -162,8 +199,8 @@
     ],
     "dataset": "dataset_plasma_v10.csv",
     "quantidade_pecas": 1141,
-    "criado_em_utc": "2026-09-18T18:37:43.564947+00:00",
-    "python": "3.12.14",
+    "criado_em_utc": "2026-09-26T13:47:35.884847+00:00",
+    "python": "3.14.0",
     "scikit_learn": "1.9.1"
   }
 }

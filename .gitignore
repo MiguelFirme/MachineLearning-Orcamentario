@@ -1,4 +1,10 @@
 .venv/
+.python/
+.libreoffice/
+.poppler/
+.qa_relatorio/
 __pycache__/
 *.pyc
+*docx
+
 

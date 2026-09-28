@@ -43,9 +43,13 @@ O treinamento usa validação aninhada. Linhas com entradas geométricas idênti
 permanecem na mesma dobra, reduzindo o risco de uma peça quase duplicada aparecer
 simultaneamente no treino e no teste.
 
+Para o KNN, a busca de hiperparâmetros compara as distâncias Manhattan,
+Euclidiana e Chebyshev e escolhe a combinação com menor MAE na validação interna.
+
 Resultado atual: KNN obteve MAE de 17,43 s e R² de 0,722. A regressão polinomial
 foi escolhida como segundo modelo por reduzir em 2,54% o MAE da regressão
-múltipla. As métricas completas estão em `resultados/relatorio_treinamento.json`.
+múltipla. Manhattan foi novamente escolhida após a inclusão de Chebyshev na
+comparação. As métricas completas estão em `resultados/relatorio_treinamento.json`.
 
 ## Prever uma peça
 

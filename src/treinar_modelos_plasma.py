@@ -68,6 +68,7 @@ NUMERICAS = [
 ]
 FEATURES = CATEGORICAS + NUMERICAS
 SEMENTE = 42
+METRICAS_DISTANCIA_KNN = ["manhattan", "euclidean", "chebyshev"]
 
 
 def erro_absoluto_com_trava(y_real, y_previsto):
@@ -120,7 +121,7 @@ def candidatos():
             {
                 "modelo__n_neighbors": [3, 5, 7, 9, 11, 15, 21, 31],
                 "modelo__weights": ["uniform", "distance"],
-                "modelo__p": [1, 2],
+                "modelo__metric": METRICAS_DISTANCIA_KNN,
             },
         ),
         "regressao_multipla": (
@@ -186,6 +187,7 @@ def avaliar_aninhado(X, y, grupos):
     previsoes = {nome: np.zeros(len(X), dtype=float) for nome in modelos}
     parametros = {nome: [] for nome in modelos}
     maes_por_dobra = {nome: [] for nome in modelos}
+    maes_internos_por_metrica_knn = {metrica: [] for metrica in METRICAS_DISTANCIA_KNN}
 
     externa = GroupKFold(n_splits=5, shuffle=True, random_state=SEMENTE)
     for numero, (treino, teste) in enumerate(externa.split(X, y, grupos), start=1):
@@ -200,6 +202,14 @@ def avaliar_aninhado(X, y, grupos):
                 refit=True,
             )
             busca.fit(X.iloc[treino], y[treino], groups=grupos[treino])
+            if nome == "knn":
+                metricas_avaliadas = np.asarray(
+                    busca.cv_results_["param_modelo__metric"], dtype=str
+                )
+                scores_medios = np.asarray(busca.cv_results_["mean_test_score"], dtype=float)
+                for metrica in METRICAS_DISTANCIA_KNN:
+                    melhor_score = scores_medios[metricas_avaliadas == metrica].max()
+                    maes_internos_por_metrica_knn[metrica].append(float(-melhor_score))
             previsto = np.clip(busca.predict(X.iloc[teste]), 0.0, None)
             previsoes[nome][teste] = previsto
             parametros[nome].append(parametros_serializaveis(busca.best_params_))
@@ -217,6 +227,13 @@ def avaliar_aninhado(X, y, grupos):
             "mae_desvio_dobras_s": float(np.std(maes_por_dobra[nome], ddof=1)),
             "melhores_parametros_por_dobra": parametros[nome],
         }
+    resumo["knn"]["comparacao_metricas_distancia_validacao_interna"] = {
+        metrica: {
+            "mae_por_dobra_s": valores,
+            "mae_medio_s": float(np.mean(valores)),
+        }
+        for metrica, valores in maes_internos_por_metrica_knn.items()
+    }
     return previsoes, resumo
 
 
@@ -326,6 +343,7 @@ def main():
             "validacao_externa": "GroupKFold 5 dobras",
             "validacao_interna": "GroupKFold 4 dobras",
             "criterio_ajuste": "menor MAE",
+            "metricas_distancia_knn_testadas": METRICAS_DISTANCIA_KNN,
             "agrupamento": "linhas com entradas identicas permanecem na mesma dobra",
             "regra_escolha_regressao": (
                 "polinomial apenas se reduzir o MAE fora da amostra em pelo menos 2%; "

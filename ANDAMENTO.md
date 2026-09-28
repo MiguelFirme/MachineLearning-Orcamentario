@@ -40,6 +40,10 @@ Este arquivo é o ponto de retomada do projeto. Atualize-o ao concluir cada etap
    menos 2%. Em empate prático, a múltipla é preferida por ser mais simples.
 6. A validação é aninhada: a parte externa mede generalização e a interna escolhe
    hiperparâmetros. Entradas idênticas são agrupadas na mesma dobra.
+7. O KNN compara as distâncias Manhattan, Euclidiana e Chebyshev pelo MAE da
+   validação interna. Manhattan venceu nas cinco dobras externas e no ajuste final.
+   Os MAEs internos médios foram 18,92 s (Manhattan), 19,46 s (Euclidiana) e
+   20,72 s (Chebyshev).
 
 ## Próximo passo ao retomar
 
@@ -57,7 +61,8 @@ deve priorizar MAE (mantendo a polinomial) ou RMSE/R² (o que favorece a múltip
 - Ressalva: a regressão múltipla teve RMSE e R² ligeiramente melhores. A escolha
   da polinomial prioriza MAE, métrica principal registrada no método.
 - Hiperparâmetros finais: KNN com 7 vizinhos, distância Manhattan e pesos por
-  distância; polinomial de grau 2 com Ridge alpha 100.
+  distância (após comparação também com Euclidiana e Chebyshev); polinomial de
+  grau 2 com Ridge alpha 100.
 - Teste funcional: peça `00.BL.1001`, SAE 1020, 6,4 mm. Tempo registrado no
   dataset: 90 s. Saídas: KNN 89,98 s e polinomial 90,65 s. Este teste confirma o
   fluxo DXF → entradas → modelos, mas não mede generalização, porque os modelos
