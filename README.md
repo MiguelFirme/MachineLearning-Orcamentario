@@ -25,7 +25,7 @@ KNN é usado como **regressor** porque o tempo é um valor numérico contínuo.
 
 ## Preparar em outro computador
 
-No PowerShell, dentro da pasta `V2`:
+No PowerShell, dentro da pasta:
 
 ```powershell
 python -m venv .venv
