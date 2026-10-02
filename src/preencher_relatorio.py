@@ -14,7 +14,7 @@ from docx.shared import Cm, Pt, RGBColor
 
 
 RAIZ = Path(__file__).resolve().parents[1]
-ENTRADA = RAIZ / "Relatório_preenchido.docx"
+ENTRADA = RAIZ / "Relatório.docx"
 SAIDA = RAIZ / "Relatório_preenchido.docx"
 GRAFICOS = RAIZ / "graficos_treinamento"
 
@@ -375,6 +375,27 @@ def construir_relatorio(doc):
     )
     paragrafo(
         doc,
+        "No estado da arte, os estudos mais próximos tratam objetivos relacionados, mas diferentes. "
+        "Bakker (2023) estimou horas de trabalho e carga operacional de uma máquina de plasma; "
+        "Ma’ruf, Thoriq e Buwana (2024) estimaram tempo de usinagem CNC com dados de CAM; "
+        "Salonitis e Vatousianos (2012) modelaram a qualidade do corte plasma; e o estudo de "
+        "Lazarevic e Lazarevic (2022) modelaram velocidade em função de parâmetros e qualidade. Nenhum desses "
+        "resultados é uma medida diretamente comparável ao erro em segundos por peça deste projeto."
+    )
+    tabela(
+        doc,
+        ["Estudo", "Processo e alvo", "Relação com este projeto"],
+        [
+            ["Bakker 2023", "Plasma; horas de operação", "Motivação para planejamento, mas unidade de análise distinta"],
+            ["Ma’ruf et al. 2024", "CNC; tempo de usinagem", "Usa geometria e comprimento de corte para estimativa antecipada"],
+            ["Salonitis e Vatousianos 2012", "Plasma; qualidade do corte", "Mostra influência das condições operacionais"],
+            ["Lazarevic e Lazarevic 2022", "Plasma; velocidade e qualidade", "Relaciona espessura e parâmetros à velocidade"],
+            ["Este projeto", "Plasma; segundos por peça", "DXF, material e espessura; KNN versus Ridge"],
+        ],
+        larguras=[3.4, 4.1, 8.0],
+    )
+    paragrafo(
+        doc,
         "Na amostra analítica deste projeto, o tempo varia de 4,53 s a 300 s, com média de 82,01 s "
         "e mediana de 60 s. Pelo critério do intervalo interquartil, 107 registros do alvo são valores "
         "extremos. Eles foram mantidos porque representam peças reais e porque remover casos longos "
@@ -514,6 +535,23 @@ def construir_relatorio(doc):
         "explicada pelo modelo. Também foram calculados percentis do erro e a parcela de previsões com "
         "erro máximo de 10, 20 e 30 segundos."
     )
+    paragrafo(
+        doc,
+        "Para n peças, o MAE é a média de |tempo real − tempo previsto|; assim, 17,43 s significa "
+        "erro absoluto médio de 17,43 segundos no KNN. O RMSE é a raiz da média dos erros ao quadrado "
+        "e penaliza mais previsões muito distantes do real. O R² compara a soma dos erros quadráticos "
+        "com a variação em torno da média do conjunto avaliado; 0,722 indica redução aproximada de "
+        "72,2% nessa soma em relação a prever a média. Um R² alto não garante erro pequeno em toda peça."
+    )
+    paragrafo(
+        doc,
+        "Acurácia mede a fração de classes corretas; precisão, a fração de positivos previstos que "
+        "são positivos reais; recall, a fração dos positivos reais identificados; e F1 é a média "
+        "harmônica de precisão e recall. Essas definições exigem classes e um significado para "
+        "positivo, ausentes no alvo original. Discretizar tempos apenas para calculá-las descartaria "
+        "diferenças relevantes em segundos e dependeria de limiares arbitrários. A curva ROC também "
+        "exige uma tarefa de classificação binária e escores correspondentes."
+    )
     tabela(
         doc,
         ["Modelo", "MAE s", "RMSE s", "R²", "Erro até 20 s"],
@@ -530,6 +568,15 @@ def construir_relatorio(doc):
     figura(doc, "04_real_vs_previsto_regressao_multipla.png", "Figura 5 Tempos reais e previstos pela regressão Ridge múltipla")
     figura(doc, "05_real_vs_previsto_regressao_polinomial.png", "Figura 6 Tempos reais e previstos pela regressão Ridge polinomial")
     figura(doc, "08_faixas_de_erro_modelos.png", "Figura 7 Percentual de previsões dentro das faixas de erro")
+    figura(doc, "09_matriz_faixas_tempo.png", "Figura 8 Matriz diagnóstica de faixas reais e previstas em segundos", largura=14.5)
+    paragrafo(
+        doc,
+        "A Figura 8 agrupa os tempos em até 30, de 30 a 60, de 60 a 120 e acima de 120 segundos. "
+        "Cada célula mostra a contagem e o percentual dentro da faixa real, calculados com previsões "
+        "externas da validação cruzada. A diagonal representa permanência na mesma faixa. É uma "
+        "visualização semelhante a uma matriz de confusão, mas não substitui MAE, RMSE ou R², pois "
+        "duas previsões na mesma faixa ainda podem diferir muito em segundos."
+    )
     paragrafo(
         doc,
         "O KNN foi superior nos três indicadores principais e manteve 70,46% das previsões dentro de "
@@ -591,7 +638,7 @@ def construir_relatorio(doc):
             ["Modelos treinados", "model/modelo_knn_plasma.joblib e model/modelo_regressao_plasma.joblib"],
             ["Resultados", "resultados/relatorio_treinamento.json e previsoes_validacao_cruzada.csv"],
             ["Gráficos", "graficos_treinamento"],
-            ["Apresentação", "Slides a serem preparados para a defesa oral"],
+            ["Apresentação", "Etapa posterior à conclusão deste relatório"],
         ],
         larguras=[4.8, 10.7],
     )
@@ -625,7 +672,8 @@ def construir_relatorio(doc):
             ["Implementação e validação dos modelos", "Concluída"],
             ["Comparação de distâncias e geração dos gráficos", "Concluída"],
             ["Programa de previsão e teste funcional", "Concluída"],
-            ["Revisão final do texto e preparação dos slides", "Próxima etapa"],
+            ["Revisão final do texto e gráficos", "Concluída"],
+            ["Preparação dos slides", "Próxima etapa"],
         ],
         larguras=[10.5, 5.0],
         centralizadas=[1],
@@ -636,6 +684,7 @@ def construir_relatorio(doc):
         "BAKKER, Mirjam. Workload Prediction for the V310: An application of linear regression and time study to make an estimation on required man hours. University of Twente, 2023. Disponível em: https://essay.utwente.nl/97072/. Acesso em: 26 set. 2026.",
         "MA’RUF, Anas; THORIQ, Dimas Ahmad; BUWANA, Kresna Surya. An Early Machining Time Estimation for Make-to-Order Manufacturing Using Machine Learning Approach. Procedia CIRP, v. 130, p. 106-111, 2024. DOI: https://doi.org/10.1016/j.procir.2024.10.063.",
         "SALONITIS, Konstantinos; VATOUSIANOS, S. Experimental Investigation of the Plasma Arc Cutting Process. Procedia CIRP, v. 3, p. 287-292, 2012. DOI: https://doi.org/10.1016/j.procir.2012.07.050.",
+        "LAZAREVIC, Andjela; LAZAREVIC, Dragoljub. Effects of plasma arc cutting process parameters on the cutting speed optimization based on the required cut quality. CIRP Journal of Manufacturing Science and Technology, v. 38, p. 836-843, 2022. DOI: https://doi.org/10.1016/j.cirpj.2022.07.003.",
         "SCIKIT-LEARN DEVELOPERS. KNeighborsRegressor. Scikit-learn 1.9.1 documentation. Disponível em: https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html. Acesso em: 26 set. 2026.",
         "SCIKIT-LEARN DEVELOPERS. Ridge. Scikit-learn 1.9.1 documentation. Disponível em: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html. Acesso em: 26 set. 2026.",
         "SCIKIT-LEARN DEVELOPERS. GridSearchCV e GroupKFold. Scikit-learn 1.9.1 documentation. Disponível em: https://scikit-learn.org/stable/modules/model_evaluation.html. Acesso em: 26 set. 2026.",

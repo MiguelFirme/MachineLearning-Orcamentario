@@ -166,6 +166,68 @@ def grafico_faixas_erro(relatorio):
     salvar(figura, "08_faixas_de_erro_modelos.png")
 
 
+def grafico_matriz_faixas_tempo(previsoes):
+    """Mostra a migração entre faixas de tempo, sem tratar regressão como classificação."""
+    limites = [-np.inf, 30, 60, 120, np.inf]
+    rotulos = ["≤30", "30–60", "60–120", ">120"]
+    real = pd.cut(previsoes["tempo_corte_plasma_s"], limites, labels=rotulos).to_numpy()
+    modelos = [
+        ("KNN", "previsao_knn_s"),
+        ("Ridge polinomial", "previsao_regressao_polinomial_s"),
+    ]
+    figura, eixos = plt.subplots(1, 2, figsize=(10.7, 4.5), sharey=True)
+    for eixo, (nome, coluna) in zip(eixos, modelos):
+        previsto = pd.cut(previsoes[coluna], limites, labels=rotulos).to_numpy()
+        matriz = np.array([[np.sum((real == r) & (previsto == p))
+                            for p in rotulos] for r in rotulos])
+        proporcao = 100 * matriz / matriz.sum(axis=1, keepdims=True)
+        imagem = eixo.imshow(proporcao, vmin=0, vmax=100, cmap="Blues")
+        eixo.set_title(nome)
+        eixo.set_xlabel("Faixa prevista (s)")
+        eixo.set_xticks(range(4), rotulos)
+        eixo.set_yticks(range(4), rotulos)
+        for linha in range(4):
+            for coluna_idx in range(4):
+                valor = proporcao[linha, coluna_idx]
+                eixo.text(coluna_idx, linha, f"{matriz[linha, coluna_idx]}\n({valor:.0f}%)",
+                          ha="center", va="center", fontsize=9,
+                          color="white" if valor > 55 else "#111827")
+    eixos[0].set_ylabel("Faixa real (s)")
+    escala = figura.add_axes([0.915, 0.22, 0.018, 0.52])
+    figura.colorbar(imagem, cax=escala, label="% da faixa real")
+    figura.suptitle("Matriz diagnóstica por faixas de tempo", fontsize=14, fontweight="bold")
+    figura.subplots_adjust(left=0.08, right=0.87, top=0.83, bottom=0.14, wspace=0.20)
+    figura.savefig(PASTA_SAIDA / "09_matriz_faixas_tempo.png", dpi=300, bbox_inches="tight")
+    plt.close(figura)
+
+
+def grafico_erro_por_tempo_real(previsoes):
+    """Compara o MAE dos dois modelos finais em faixas definidas pelo tempo real."""
+    faixas = pd.cut(previsoes["tempo_corte_plasma_s"],
+                    [-np.inf, 30, 60, 120, np.inf],
+                    labels=["Até 30 s", "30–60 s", "60–120 s", "Acima de 120 s"])
+    dados = previsoes.assign(faixa=faixas).groupby("faixa", observed=True).agg(
+        n=("tempo_corte_plasma_s", "size"),
+        knn=("erro_absoluto_knn_s", "mean"),
+        ridge=("erro_absoluto_regressao_polinomial_s", "mean"),
+    )
+    x = np.arange(len(dados))
+    fig, ax = plt.subplots(figsize=(9.4, 4.8))
+    largura = 0.34
+    a = ax.bar(x - largura / 2, dados["knn"], largura, color=CORES["KNN"], label="KNN")
+    b = ax.bar(x + largura / 2, dados["ridge"], largura,
+               color=CORES["Regressão polinomial"], label="Ridge polinomial")
+    ax.bar_label(a, fmt="%.1f", padding=3)
+    ax.bar_label(b, fmt="%.1f", padding=3)
+    ax.set_xticks(x, [f"{faixa}\n(n={n})" for faixa, n in zip(dados.index, dados["n"])])
+    ax.set_ylim(0, max(dados["ridge"]) * 1.2)
+    ax.set_ylabel("Erro absoluto médio (s)")
+    ax.set_title("Erro por faixa de tempo real")
+    ax.grid(axis="y")
+    ax.legend(frameon=False)
+    salvar(fig, "10_erro_por_tempo_real.png")
+
+
 def main():
     PASTA_SAIDA.mkdir(parents=True, exist_ok=True)
     configurar_estilo()
@@ -194,6 +256,8 @@ def main():
     grafico_erros(previsoes)
     grafico_distancias(relatorio)
     grafico_faixas_erro(relatorio)
+    grafico_matriz_faixas_tempo(previsoes)
+    grafico_erro_por_tempo_real(previsoes)
     print(f"Gráficos salvos em: {PASTA_SAIDA}")
 
 
